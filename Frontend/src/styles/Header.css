@@ -1,0 +1,45 @@
+
+.header {
+    height: 700px; 
+    color: white;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 90px;
+}
+
+.content {
+    flex: 1; 
+    max-width: 55%; 
+    padding-right: 20px;
+}
+
+.image {
+    flex: 1;
+    text-align: center;
+}
+
+.ims {
+    max-width: 100%;
+    height: auto; 
+}
+
+.heading {
+    font-size: 50px;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color:  rgb(37, 3, 111);
+    margin-top: 40px;
+    margin-top: 20px;
+}
+
+.heading-content {
+    font-size: 25px;
+    color: rgba(0, 0, 0, 0.782);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 40px; 
+    margin-top: 20px; 
+    line-height: 1.6;
+    max-width: 84%; 
+}

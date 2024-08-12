@@ -1,0 +1,83 @@
+.product-table {
+    margin: 50px 100px;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+  
+  .Add, .Minus, .Delete, .AddProduct {
+    margin-right: 5px;
+    padding: 3px 8px;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .Add:hover {
+    background-color: #0d8e1c;
+  }
+
+  .Add{
+    background-color: #0dab20;
+  }
+  
+  .Minus, .Delete{
+    background-color: #c30f0f;  
+  }
+
+  .Minus:hover, .Delete:hover{
+    background-color: #9e0606; 
+  }
+
+  .AddProduct{
+    background-color: rgb(50, 2, 154);
+    padding: 10px;
+    margin: 10px auto;
+    display: flex;
+    border-radius: 10px;
+    font-size: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .add-div{
+    height: 50px;
+    margin-top: 40px;
+  }
+  
+  .AddProduct:hover{
+    background-color: rgb(37, 3, 111);
+  }

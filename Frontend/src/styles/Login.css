@@ -1,0 +1,83 @@
+.form-login {
+    border-radius: 25px;
+    max-width: 500px;
+    background-color: rgb(50, 2, 154); 
+    border: 2px solid rgb(168, 168, 168); 
+    padding: 20px;
+    margin: 100px auto; 
+    height: 400px;
+}
+
+.form-register {
+    border-radius: 10px;
+    max-width: 600px;
+    background-color: rgb(233, 231, 228);
+    border: 2px solid rgb(168, 168, 168); 
+    padding: 20px;
+    padding-bottom: 30px;
+    margin: 100px auto; 
+    height: 720px;
+}
+
+.register {
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+input {
+    width: 95%; 
+    padding: 10px 26px 10px 15px; 
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 20px; 
+    box-sizing: border-box; 
+    justify-content: center;
+    align-items: center; 
+}
+
+.input-details {
+    margin-bottom: 20px; 
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+label {
+    display: block; 
+    margin-bottom: 25px; 
+    font-weight: bold; 
+    font-size: 24px;
+    color: white;
+}
+
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-top: 20px; 
+    margin-bottom: 20px;
+}
+
+.button button {
+    width: 150px;
+    background-color: white; 
+    color: rgb(50, 2, 154); 
+    border: none; 
+    border-radius: 25px; 
+    cursor: pointer; 
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-weight: bold;
+    transition: background-color 0.3s ease; 
+    height: 40px;
+}
+
+
+.button button:hover {
+    background-color: rgb(29, 170, 48); 
+    color: white;
+}
