@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
 import Product from '../components/Product';
-import Profile from '../components/Profile';
-import AddPopup from '../components/AddPopup'; // Import AddPopup component
+import AddPopup from '../components/AddPopup';
 
 const Productpage = () => {
-  const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleShowPopup = () => {
-    setShowPopup(true); // Show popup
+    setShowPopup(true);
   };
 
   const handleClosePopup = () => {
-    setShowPopup(false); // Close popup
+    setShowPopup(false);
   };
 
   return (
     <div>
-      <Profile />
-      <Product onShowPopup={handleShowPopup} /> {/* Pass down the function as a prop */}
-      <AddPopup show={showPopup} onClose={handleClosePopup} /> {/* Render the popup */}
+      <Navbar />
+      <Product onShowPopup={handleShowPopup} />
+      <AddPopup show={showPopup} onClose={handleClosePopup} />
     </div>
   );
 };

@@ -7,10 +7,10 @@ const IncorrectPopup = ({ show, onClose }) => {
 
   return (
     <div className="popup-container">
-      <div className="popup-overlay">
+      <div className="password-popup-overlay">
         <h4>Password does not match</h4>
         <img className = "wrong" src={ImageSrc} alt="cross mark" />
-        <button className='ok' type="button" onClick={onClose}>Ok</button>
+        <button className="password-ok" type="button" onClick={onClose}>Ok</button>
       </div>
     </div>
   );

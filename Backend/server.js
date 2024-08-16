@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const nodemailer = require('nodemailer'); // Import Nodemailer
 
 const app = express();
 
@@ -61,6 +62,38 @@ app.post('/login', async (req, res) => {
   }
 
   res.status(200).json({ message: 'Login successful' });
+});
+
+// Route to handle contact form submission
+app.post('/send-email', (req, res) => {
+  const { name, email, message } = req.body;
+
+  // Create a transporter object using SMTP transport
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'kavyaprabahar0128@gmail.com', // Replace with your email
+      pass: 'kavyasatya0105' // Replace with your email password or an app password
+    }
+  });
+
+  const mailOptions = {
+    from: email,
+    to: 'kavyaprabahar0128@gmail.com', // Replace with the recipient's email
+    subject: `Query from ${name}`,
+    text: message
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error sending email');
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.status(200).send('Email sent successfully');
+    }
+  });
 });
 
 // Start the server

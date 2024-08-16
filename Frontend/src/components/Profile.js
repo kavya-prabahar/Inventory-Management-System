@@ -3,6 +3,7 @@ import '../styles/Navbar.css';
 import { Link } from 'react-router-dom';
 import imageSrc from '../images/output-onlinetools.png';
 import Productpage from '../pages/Productpage';
+import ContactUs from './ContactUs';
 
 const Profile = () => {
 
@@ -24,7 +25,7 @@ const Profile = () => {
             </Link>
           </li>
           <li className="nav-list-item">
-            <Link to="/contact">
+            <Link to="/ContactUs">
               CONTACT
             </Link>
           </li>

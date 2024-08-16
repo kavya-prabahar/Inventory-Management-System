@@ -10,30 +10,30 @@
     background-color: rgba(0, 0, 0, 0.5); 
 }
 
-.popup-overlay {
+.success-popup-overlay {
     background-color: white;
     border-radius: 20px;
-    width: 400px;
-    height: 300px;
+    width: 320px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.tick{
-    height: 70px;
-    width: 150px;
-    margin-bottom: 40px;
+.success-popup-overlay .tick {
+    height: 60px;
+    width: 120px; /* Changed from 0px to 60px */
+    margin-bottom: 30px;
 }
 
-.ok {
+.success-ok {
     border-radius: 50px;
     background-color: rgb(50, 2, 154);
-    width: 100px;
+    width: 80px;
     height: 40px;
     color: white;
     font-size: 16px;
@@ -41,7 +41,7 @@
     cursor: pointer;
 }
 
-.ok:hover {
+.success-ok:hover {
     background-color:  rgb(37, 3, 111);
 }
 

@@ -1,0 +1,113 @@
+h1 {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.contact-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #93909000;
+    border-radius: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 0px solid #000000;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.contact-label {
+    margin-bottom: 15px;
+    color: rgb(50, 2, 154); 
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 8px;
+}
+
+
+input[type="text"], input[type="tel"], input[type="email"], textarea {
+    width: calc(100% - 22px);
+    padding: 13px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical; /* Allow vertical resizing of the textarea */
+}
+
+.submit-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+input[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+    .one {
+        width: 95%;
+        padding: 10px;
+    }
+}
+
+
+.popup {
+    display: none; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    z-index: 1000; 
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+}
+
+.submit-button{
+    background-color: rgb(50, 2, 154);
+    height: 40px;
+    width: 100px;
+    color: white;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+}

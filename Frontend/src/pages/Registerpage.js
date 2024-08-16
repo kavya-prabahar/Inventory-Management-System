@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Nav from '../components/Nav';
+import Navbar from '../components/Navbar';
 import Register from '../components/Register';
 import SuccessPopup from '../components/SuccessPopup';
 import IncorrectPopup from '../components/IncorrectPopup';
-import UserExistsPopup from '../components/UserExistsPopup'; // Import the UserExistsPopup
+import UserExistsPopup from '../components/UserExistsPopup';
 
 const Registerpage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
-  const [showExistsPopup, setShowExistsPopup] = useState(false); // State for UserExistsPopup
+  const [showExistsPopup, setShowExistsPopup] = useState(false);
 
   const handleRegisterClick = () => {
     setShowPopup(true);
@@ -23,7 +23,7 @@ const Registerpage = () => {
   };
 
   const handleShowExistsPopup = () => {
-    setShowExistsPopup(true); // Show the UserExistsPopup
+    setShowExistsPopup(true);
   };
 
   useEffect(() => {
@@ -40,15 +40,15 @@ const Registerpage = () => {
 
   return (
     <div>
-      <Nav />
+      <Navbar />
       <Register 
         onRegisterClick={handleRegisterClick} 
         onShowErrorPopup={handleShowErrorPopup} 
-        onShowExistsPopup={handleShowExistsPopup} // Pass the handler to Register
+        onShowExistsPopup={handleShowExistsPopup} 
       />
       <SuccessPopup show={showPopup} onClose={handleClosePopup} />
       <IncorrectPopup show={showErrorPopup} onClose={() => setShowErrorPopup(false)} />
-      <UserExistsPopup show={showExistsPopup} onClose={() => setShowExistsPopup(false)} /> {/* Add UserExistsPopup */}
+      <UserExistsPopup show={showExistsPopup} onClose={() => setShowExistsPopup(false)} />
     </div>
   );
 };

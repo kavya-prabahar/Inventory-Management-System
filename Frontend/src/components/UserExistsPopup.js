@@ -6,9 +6,9 @@ const UserExistsPopup = ({ show, onClose }) => {
 
   return (
     <div className="popup-container">
-      <div className="popup-overlay">
+      <div className="user-popup-overlay">
         <h4>User already exists</h4>
-        <button className="ok" type="button" onClick={onClose}>Ok</button>
+        <button className="user-ok" type="button" onClick={onClose}>Ok</button>
       </div>
     </div>
   );

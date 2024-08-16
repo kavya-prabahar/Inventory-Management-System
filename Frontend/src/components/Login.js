@@ -25,6 +25,7 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem('authToken', data.token); // Store the token
         navigate('/Productpage'); // Redirect to the product page
       } else {
         setPopupMessage(data.message || 'Login failed');

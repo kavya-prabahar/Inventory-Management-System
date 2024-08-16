@@ -5,7 +5,7 @@
     border: 2px solid rgb(168, 168, 168); 
     padding: 20px;
     margin: 100px auto; 
-    height: 770px;
+    height: 640px;
 }
 
 
@@ -18,15 +18,18 @@
     margin-top: 50px;
 }
 
-input {
+.register-input {
     width: 95%; 
     padding: 10px 26px 10px 15px; 
     margin-bottom: 20px;
     border: 1px solid #ccc;
-    border-radius: 20px; 
     box-sizing: border-box; 
     justify-content: center;
     align-items: center; 
+}
+
+.register-input {
+    border-radius: 40px !important;
 }
 
 .input-details {
