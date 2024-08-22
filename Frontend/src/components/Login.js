@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import UserIncorrectPopup from './UserIncorrectPopup';
 
 const Login = () => {
@@ -26,7 +27,7 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem('authToken', data.token); // Store the token
-        navigate('/Productpage'); // Redirect to the product page
+        navigate('/Productpage', { state: { email, organization: '' } }); // Redirect to the product page
       } else {
         setPopupMessage(data.message || 'Login failed');
         setShowPopup(true);

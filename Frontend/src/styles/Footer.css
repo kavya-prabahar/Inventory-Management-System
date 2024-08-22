@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+footer {
+    background-color: rgb(50, 2, 154);
+    color: #fff; 
+    padding: 20px 0;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto; /* Center container horizontally */
+    padding: 0 30px; /* Add horizontal padding */
+}
+
+.footer-section {
+    flex: 1;
+    padding: 0 30px;
+    min-width: 200px;
+}
+
+.contact-us-heading, .follow-us-heading {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.footer-section h2,
+.quick-links{
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.footer-section p,
+.footer-section ul {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 5px 0;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    text-decoration: underline;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: space-around; /* Distribute icons evenly */
+}
+
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-icons img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.facebook-icon img {
+    width: 50px; /* Adjust size as needed */
+    height: 40px;
+}
+
+.twitter-icon img {
+    width: 50px; /* Adjust size as needed */
+    height: 40px;
+}
+
+.instagram-icon img {
+    width: 50px; /* Adjust size as needed */
+    height: 40px;
+}
+
+.linkedin-icon img {
+    width: 50px; /* Adjust size as needed */
+    height: 30px;
+}
+
+.footer-section p a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-section p a:hover {
+    text-decoration: underline;
+}

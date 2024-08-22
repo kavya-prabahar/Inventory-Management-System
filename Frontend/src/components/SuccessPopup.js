@@ -9,8 +9,8 @@ const SuccessPopup = ({ show, onClose }) => {
     <div className="popup-container">
       <div className="success-popup-overlay">
         <h4>Registered Successfully</h4>
-        <img className = "tick" src={ImageSrc} alt="tick mark" />
-        <button className = "success-ok" type="button" onClick={onClose}>Ok</button>
+        <img className="tick" src={ImageSrc} alt="tick mark" />
+        <button className="success-ok" type="button" onClick={onClose}>Ok</button>
       </div>
     </div>
   );

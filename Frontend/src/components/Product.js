@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Product.css'; 
+import axios from 'axios';
 
-const Product = ({ onShowPopup }) => {
+const Product = ({ onShowPopup, email }) => {
   const [products, setProducts] = useState([
     { id: 1, name: '', code: '', price: 0, quantity: 0 },
   ]);
 
+  useEffect(() => {
+    console.log('Products state changed:', products);
+  }, [products]);
+
   const handleAdd = () => {
-    // Check if all fields are filled
     const allFieldsFilled = products.every(product =>
       product.name && product.code && product.price && product.quantity
     );
-
+  
     if (allFieldsFilled) {
       const newProduct = {
         id: products.length + 1,
@@ -20,9 +24,10 @@ const Product = ({ onShowPopup }) => {
         price: 0,
         quantity: 0,
       };
-      setProducts([...products, newProduct]);
+      const updatedProducts = [...products, newProduct];
+      setProducts(updatedProducts);
     } else {
-      onShowPopup(); // Show the popup if fields are not filled
+      onShowPopup();
     }
   };
 
@@ -36,6 +41,28 @@ const Product = ({ onShowPopup }) => {
     setProducts(products.filter(product => product.id !== id));
   };
 
+  const handleSave = async () => {
+    try {
+      console.log('Sending request to update products...');
+      const payload = {
+        email,
+        products
+      };
+      console.log('Payload:', payload);
+  
+      const response = await axios.post('http://localhost:5000/update-product', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Server response:', response.data);
+      alert('Products updated successfully');
+    } catch (error) {
+      console.error('Error updating products:', error.response?.data || error.message);
+      alert(`Error updating products: ${error.response?.data?.message || error.message}`);
+    }
+  };
+  
   return (
     <div className="product-table">
       <table>
@@ -87,15 +114,16 @@ const Product = ({ onShowPopup }) => {
               </td>
               <td>
                 <button className="Add" onClick={() => handleUpdate(product.id, 'quantity', product.quantity + 1)}>+</button>
-                <button className="Minus" onClick={() => handleUpdate(product.id, 'quantity', product.quantity - 1)}>-</button>
+                <button className="Subtract" onClick={() => handleUpdate(product.id, 'quantity', product.quantity - 1)}>-</button>
                 <button className="Delete" onClick={() => handleDelete(product.id)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="add-div">
-        <button type="button" className="AddProduct" onClick={handleAdd}>Add Product</button>
+      <div className="buttons">
+        <button className="AddProductButton" onClick={handleAdd}>Add Product</button>
+        <button className="SaveButton" onClick={handleSave}>Save Products</button>
       </div>
     </div>
   );

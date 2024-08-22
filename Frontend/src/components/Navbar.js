@@ -1,13 +1,14 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import '../styles/Navbar.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // Lazy load components
 const ProfileImage = lazy(() => import('./ProfileImage'));
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null); // Set to null initially
-  const location = useLocation();
+  const location = useLocation()
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if the user is logged in by checking for a token in local storage
@@ -15,12 +16,19 @@ const Navbar = () => {
     setIsLoggedIn(!!token); // Set isLoggedIn based on the presence of the token
   }, [location]);
 
-  const handleLogout = () => {
-    // Handle logout by removing the token and updating the logged-in state
-    localStorage.removeItem('authToken');
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:5000/logout', {
+        method: 'POST',
+        credentials: 'include' // Include cookies (session) in the request
+      });
+      localStorage.removeItem('authToken'); // Clear any auth token if used
+      navigate('/Loginpage');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
-
+  
   // Check if the current page is Login or Register page
   const isAuthPage = location.pathname === '/Loginpage' || location.pathname === '/Registerpage';
 
@@ -51,6 +59,7 @@ const Navbar = () => {
       <div className="nav-right">
         {isLoggedIn ? (
           <Suspense fallback={<div>Loading...</div>}>
+            
             <Link to="#">
               <ProfileImage />
             </Link>
