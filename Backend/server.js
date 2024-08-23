@@ -11,13 +11,15 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json()); // Use this for parsing JSON request bodies
 app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true,
   })
 );
+
+sgMail.setApiKey(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);
 
 // Session management
 app.use(
@@ -143,7 +145,11 @@ app.post('/logout', (req, res) => {
 // Route to handle product updates
 app.post('/update-product', async (req, res) => {
   console.log('Received request to update products');
+  console.log('Request body:', req.body); // Log the entire request body
+
   const { email, products } = req.body;
+
+  console.log('Parsed email:', email); // Log the parsed email
 
   if (!email || !Array.isArray(products)) {
     console.error('Invalid request: missing email or products');
@@ -184,24 +190,30 @@ app.post('/update-product', async (req, res) => {
   }
 });
 
+
 // Route to handle contact form submission
+const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
+
+// Create a Nodemailer transporter using SendGrid
+const transporter = nodemailer.createTransport(
+  sgTransport({
+    auth: {
+      api_key: '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' // Replace with your SendGrid API key
+    }
+  })
+);
+
+// Route to handle sending emails
 app.post('/send-email', (req, res) => {
   console.log('Received email sending request');
   const { name, email, message } = req.body;
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'inventrack01@gmail.com', // Replace with your actual email
-      pass: 'inventrack0109', // Replace with your actual email password
-    },
-  });
-
   const mailOptions = {
-    from: email,
-    to: 'inventrack01@gmail.com', // Replace with the recipient's email
-    subject: `Query from ${name}`,
-    text: message,
+    from: email,                      // Sender's email address
+    to: 'inventrack01@gmail.com',      // Recipient's email address
+    subject: `Query from ${name}`,     // Email subject
+    text: message,                    // Email message body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -213,6 +225,11 @@ app.post('/send-email', (req, res) => {
       res.status(200).send('Email sent successfully');
     }
   });
+});
+
+app.post('/test-body', (req, res) => {
+  console.log('Received request body:', req.body); // Log request body
+  res.json(req.body); // Echo back the body
 });
 
 // Test route

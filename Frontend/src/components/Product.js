@@ -13,7 +13,7 @@ const Product = ({ onShowPopup, email }) => {
 
   const handleAdd = () => {
     const allFieldsFilled = products.every(product =>
-      product.name && product.code && product.price && product.quantity
+      product.name && product.code && product.price > 0 && product.quantity > 0
     );
   
     if (allFieldsFilled) {
@@ -33,7 +33,7 @@ const Product = ({ onShowPopup, email }) => {
 
   const handleUpdate = (id, field, value) => {
     setProducts(products.map(product =>
-      product.id === id ? { ...product, [field]: value } : product
+      product.id === id ? { ...product, [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value } : product
     ));
   };
 
@@ -55,6 +55,7 @@ const Product = ({ onShowPopup, email }) => {
           'Content-Type': 'application/json'
         }
       });
+      
       console.log('Server response:', response.data);
       alert('Products updated successfully');
     } catch (error) {
@@ -62,6 +63,7 @@ const Product = ({ onShowPopup, email }) => {
       alert(`Error updating products: ${error.response?.data?.message || error.message}`);
     }
   };
+  
   
   return (
     <div className="product-table">
