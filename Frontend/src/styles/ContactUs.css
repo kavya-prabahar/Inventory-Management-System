@@ -11,19 +11,17 @@ h1 {
     border: 1px solid #93909000;
     border-radius: 20px;
     background-color: #f9f9f9;
-    box-shadow: 0px 0px solid #000000;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2); /* Added box shadow */
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .contact-label {
     margin-bottom: 15px;
-    color: rgb(50, 2, 154); 
+    color: rgb(50, 2, 154);
     font-size: 20px;
     font-weight: bold;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
     padding: 8px;
 }
-
 
 input[type="text"], input[type="tel"], input[type="email"], textarea {
     width: calc(100% - 22px);
@@ -65,7 +63,6 @@ input[type="submit"]:hover {
     }
 }
 
-
 .popup {
     display: none; 
     position: fixed;
@@ -76,6 +73,7 @@ input[type="submit"]:hover {
     overflow: auto;
     background-color: rgba(0,0,0,0.4); 
     z-index: 1000; 
+}
 
 .popup-content {
     background-color: #fefefe;
@@ -85,6 +83,7 @@ input[type="submit"]:hover {
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Added box shadow */
 }
 
 .close {
@@ -100,9 +99,8 @@ input[type="submit"]:hover {
     text-decoration: none;
     cursor: pointer;
 }
-}
 
-.submit-button{
+.submit-button {
     background-color: rgb(50, 2, 154);
     height: 40px;
     width: 100px;

@@ -1,83 +1,99 @@
 .product-table {
-    margin: 50px 100px;
-    padding: 30px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow-x: auto;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 20px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  input[type="text"], input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-  }
-  
-  .Add, .Minus, .Delete, .AddProduct {
-    margin-right: 5px;
-    padding: 3px 8px;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .Add:hover {
-    background-color: #0d8e1c;
-  }
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-x: auto;
+  max-width: 1200px; /* Adjust according to your design */
+}
 
-  .Add{
-    background-color: #0dab20;
-  }
-  
-  .Minus, .Delete{
-    background-color: #c30f0f;  
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .Minus:hover, .Delete:hover{
-    background-color: #9e0606; 
-  }
+th, td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
 
-  .AddProduct{
-    background-color: rgb(50, 2, 154);
-    padding: 10px;
-    margin: 10px auto;
-    display: flex;
-    border-radius: 10px;
-    font-size: 15px;
-    justify-content: center;
-    align-items: center;
-  }
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
 
-  .add-div{
-    height: 50px;
-    margin-top: 40px;
-  }
-  
-  .AddProduct:hover{
-    background-color: rgb(37, 3, 111);
-  }
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  box-sizing: border-box;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 16px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.AddProductButton {
+  background-color: #0dab20;
+}
+
+.AddProductButton:hover {
+  background-color: #0d8e1c;
+}
+
+.SaveButton {
+  background-color: #3232aa;
+}
+
+.SaveButton:hover {
+  background-color: #1e1e8d;
+}
+
+.Add, .Subtract, .Delete {
+  background-color: #0dab20; /* Adjust as needed */
+}
+
+.Add:hover, .Subtract:hover, .Delete:hover {
+  background-color: #0d8e1c;
+}
+
+.Subtract {
+  background-color: #c30f0f;
+}
+
+.Subtract:hover {
+  background-color: #9e0606;
+}
+
+.Delete {
+  background-color: #c30f0f;
+}
+
+.Delete:hover {
+  background-color: #9e0606;
+}
+
+.buttons {
+  margin-top: 20px;
+  text-align: center;
+}
+

@@ -12,22 +12,27 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Session management
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'default_secret',
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: 'mongodb://localhost:27017/IMS',
-    ttl: 24 * 60 * 60 // Sessions will expire after 24 hours
-  }),
-  cookie: { secure: false } // Set `secure: true` if using HTTPS
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'default_secret',
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl:
+        'mongodb+srv://kavya_prabahar:abcdefgh12345@ims.sunqv.mongodb.net/?retryWrites=true&w=majority&appName=IMS',
+      ttl: 24 * 60 * 60, // Sessions will expire after 24 hours
+    }),
+    cookie: { secure: false }, // Set `secure: true` if using HTTPS
+  })
+);
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -36,12 +41,16 @@ app.use((req, res, next) => {
 });
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/IMS', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected to IMS database'))
-.catch(err => console.error('MongoDB connection error:', err));
+mongoose
+  .connect(
+    'mongodb+srv://kavya_prabahar:abcdefgh12345@ims.sunqv.mongodb.net/?retryWrites=true&w=majority&appName=IMS',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => console.log('MongoDB connected to IMS database'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -56,7 +65,7 @@ const userSchema = new mongoose.Schema({
       code: String,
       price: Number,
       quantity: Number,
-    }
+    },
   ],
 });
 
@@ -75,7 +84,12 @@ app.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword, organization });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      organization,
+    });
     await newUser.save();
 
     console.log('User registered successfully:', email);
@@ -115,7 +129,7 @@ app.post('/login', async (req, res) => {
 
 // Route to handle logout
 app.post('/logout', (req, res) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) {
       console.error('Error during logout:', err);
       return res.status(500).json({ message: 'Internal server error during logout' });
@@ -142,7 +156,12 @@ app.post('/update-product', async (req, res) => {
   }
 
   for (const product of products) {
-    if (!product.name || !product.code || typeof product.price !== 'number' || typeof product.quantity !== 'number') {
+    if (
+      !product.name ||
+      !product.code ||
+      typeof product.price !== 'number' ||
+      typeof product.quantity !== 'number'
+    ) {
       console.error('Invalid product data:', product);
       return res.status(400).json({ message: 'Invalid product data' });
     }
@@ -173,16 +192,16 @@ app.post('/send-email', (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'inventrack01@gmail.com',  // Replace with your actual email
-      pass: 'inventrack0109'     // Replace with your actual email password
-    }
+      user: 'inventrack01@gmail.com', // Replace with your actual email
+      pass: 'inventrack0109', // Replace with your actual email password
+    },
   });
 
   const mailOptions = {
     from: email,
     to: 'inventrack01@gmail.com', // Replace with the recipient's email
     subject: `Query from ${name}`,
-    text: message
+    text: message,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -195,7 +214,6 @@ app.post('/send-email', (req, res) => {
     }
   });
 });
-
 
 // Test route
 app.get('/test', (req, res) => {

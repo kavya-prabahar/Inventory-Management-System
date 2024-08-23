@@ -1,46 +1,77 @@
-import React,{useState} from 'react';
-import '../styles/Navbar.css';
-import { Link } from 'react-router-dom';
-import imageSrc from '../images/output-onlinetools.png';
-import Productpage from '../pages/Productpage';
-import ContactUs from './ContactUs';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios for making API calls
+import '../styles/Profile.css'
 
 const Profile = () => {
+    const [organizationName, setOrganizationName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  return (
-    <div className="navbar">
-      <div className="nav-left">
-        <ul className="nav-list">
-          <li className = "nav-list-item name">
-            <i>InvenTrack</i>
-          </li>
-          <li className="nav-list-item">
-            <Link to="/">
-              HOME
-            </Link>
-          </li>
-          <li className="nav-list-item">
-            <Link to="/Productpage">
-              PRODUCTS
-            </Link>
-          </li>
-          <li className="nav-list-item">
-            <Link to="/ContactUs">
-              CONTACT
-            </Link>
-          </li>
-        </ul>
-      </div>
+    useEffect(() => {
+        // Fetch the organization name from the backend
+        const fetchOrganizationName = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/get-organization-name');
+                setOrganizationName(response.data.organizationName);
+            } catch (error) {
+                console.error('Error fetching organization name:', error);
+            }
+        };
 
-      <div className="nav-right">
-      <Link to="#">
-      <img class = "image-profile" src={imageSrc} alt="user profile" />
-      </Link>
+        fetchOrganizationName();
+    }, []);
 
+    const handleAddUser = async () => {
+        try {
+            const payload = { email, password };
+            await axios.post('http://localhost:5000/add-user', payload);
+            alert('User added successfully');
+        } catch (error) {
+            console.error('Error adding user:', error);
+            alert('Error adding user');
+        }
+    };
 
+    const handleSaveDetails = async () => {
+        try {
+            const payload = { email, password };
+            await axios.post('http://localhost:5000/update-user-details', payload);
+            alert('Details updated successfully');
+        } catch (error) {
+            console.error('Error updating details:', error);
+            alert('Error updating details');
+        }
+    };
+
+    return (
+        <div className="profile-container">
+            <div className="organization-name">
+                <h3>Hey {organizationName}</h3>
+            </div>
+            <div className="employee-details">
+                <input
+                    type="email"
+                    id="employee-email"
+                    placeholder="Enter the mail ID of user"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    id="employee-password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="button" className="add-user" onClick={handleAddUser}>
+                    Add User
+                </button>
+                <button type="button" className="save-details" onClick={handleSaveDetails}>
+                    Save Details
+                </button>
+            </div>
         </div>
-    </div>
-  );
+    );
 };
 
 export default Profile;
