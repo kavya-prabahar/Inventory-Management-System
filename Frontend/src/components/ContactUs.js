@@ -1,44 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/ContactUs.css';
+import QuerySuccessPopup from './QuerySuccessPopup'; 
 
 const ContactUs = () => {
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
-  
-    const formData = new FormData(event.target);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      message: formData.get('message'),
-    };
-  
-    try {
-      const response = await fetch('http://localhost:5000/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
-      }
-  
-      const result = await response.text();
-      alert(result);
-    } catch (error) {
-      console.error('Error sending query:', error);
-      alert(`There was an error sending your query: ${error.message}`);
-    }
+  const [showPopup, setShowPopup] = useState(false); 
+
+  const handleButtonClick = (event) => {
+    event.preventDefault(); 
+    setShowPopup(true); // Show popup on button click
   };
-  
+
+  const closePopup = () => {
+    setShowPopup(false); // Hide popup when closed
+  };
 
   return (
     <div className="contact-container">
       <h1>Contact Us</h1>
-      <form id="contactForm" onSubmit={handleSubmit}>
+      <form id="contactForm">
         <div className="form-group">
           <label className="contact-label" htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" required />
@@ -52,9 +31,15 @@ const ContactUs = () => {
           <textarea id="message" name="message" required></textarea>
         </div>
         <div className="submit-container">
-          <button className="submit-button" type="submit">Submit</button>
+          <button className="submit-button" type="button" onClick={handleButtonClick}>Submit</button>
         </div>
       </form>
+
+      {/* Conditionally render the QuerySuccessPopup */}
+      <QuerySuccessPopup
+        show={showPopup} // Pass show prop
+        onClose={closePopup} // Provide close function
+      />
     </div>
   );
 };

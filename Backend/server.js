@@ -2,15 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
+
 const app = express();
 
-// Middleware
+
 app.use(express.json()); // Use this for parsing JSON request bodies
 app.use(
   cors({
@@ -19,8 +19,6 @@ app.use(
   })
 );
 
-sgMail.setApiKey(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);
-
 // Session management
 app.use(
   session({
@@ -28,8 +26,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl:
-        'mongodb+srv://kavya_prabahar:abcdefgh12345@ims.sunqv.mongodb.net/?retryWrites=true&w=majority&appName=IMS',
+      mongoUrl: 'mongodb+srv://kavya_prabahar:abcdefgh12345@ims.sunqv.mongodb.net/?retryWrites=true&w=majority&appName=IMS',
       ttl: 24 * 60 * 60, // Sessions will expire after 24 hours
     }),
     cookie: { secure: false }, // Set `secure: true` if using HTTPS
@@ -190,42 +187,6 @@ app.post('/update-product', async (req, res) => {
   }
 });
 
-
-// Route to handle contact form submission
-const nodemailer = require('nodemailer');
-const sgTransport = require('nodemailer-sendgrid-transport');
-
-// Create a Nodemailer transporter using SendGrid
-const transporter = nodemailer.createTransport(
-  sgTransport({
-    auth: {
-      api_key: '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' // Replace with your SendGrid API key
-    }
-  })
-);
-
-// Route to handle sending emails
-app.post('/send-email', (req, res) => {
-  console.log('Received email sending request');
-  const { name, email, message } = req.body;
-
-  const mailOptions = {
-    from: email,                      // Sender's email address
-    to: 'inventrack01@gmail.com',      // Recipient's email address
-    subject: `Query from ${name}`,     // Email subject
-    text: message,                    // Email message body
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error);
-      res.status(500).send('Error sending email');
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.status(200).send('Email sent successfully');
-    }
-  });
-});
 
 app.post('/test-body', (req, res) => {
   console.log('Received request body:', req.body); // Log request body
