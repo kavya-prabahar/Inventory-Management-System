@@ -27,7 +27,7 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem('authToken', data.token); // Store the token
-        navigate('/Productpage', { state: { email, organization: '' } }); // Redirect to the product page
+        navigate('/Productpage', { state: { email } }); // Pass the email as part of the state
       } else {
         setPopupMessage(data.message || 'Login failed');
         setShowPopup(true);

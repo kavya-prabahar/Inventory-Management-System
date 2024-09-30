@@ -7,11 +7,11 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
-
 const app = express();
 
-
 app.use(express.json()); // Use this for parsing JSON request bodies
+
+// CORS Middleware
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -19,7 +19,7 @@ app.use(
   })
 );
 
-// Session management
+// Session management middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'default_secret',
@@ -27,15 +27,19 @@ app.use(
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: 'mongodb+srv://kavya_prabahar:abcdefgh12345@ims.sunqv.mongodb.net/?retryWrites=true&w=majority&appName=IMS',
-      ttl: 24 * 60 * 60, // Sessions will expire after 24 hours
+      ttl: 24 * 60 * 60, // Sessions expire after 24 hours
     }),
     cookie: { secure: false }, // Set `secure: true` if using HTTPS
   })
 );
 
-// Logging middleware
+// Logging middleware to track all incoming requests
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} request to ${req.url}`);
+  console.log(`\n[${new Date().toISOString()}] ${req.method} request to ${req.url}`);
+  console.log('Request Headers:', req.headers); // Log request headers for debugging
+  if (req.method === 'POST' || req.method === 'PUT') {
+    console.log('Request Body:', req.body); // Log request body if it exists
+  }
   next();
 });
 
@@ -48,8 +52,8 @@ mongoose
       useUnifiedTopology: true,
     }
   )
-  .then(() => console.log('MongoDB connected to IMS database'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB successfully connected to IMS database'))
+  .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -72,7 +76,7 @@ const User = mongoose.model('User', userSchema, 'user-details');
 
 // Route to handle registration
 app.post('/register', async (req, res) => {
-  console.log('Received registration request');
+  console.log('Received registration request with body:', req.body);
   const { username, email, password, organization } = req.body;
 
   try {
@@ -82,6 +86,7 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
@@ -94,14 +99,14 @@ app.post('/register', async (req, res) => {
     console.log('User registered successfully:', email);
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error('Error during registration:', error);
+    console.error('Error during registration process:', error);
     res.status(500).json({ message: 'Internal server error during registration' });
   }
 });
 
 // Route to handle login
 app.post('/login', async (req, res) => {
-  console.log('Received login request');
+  console.log('Received login request:', req.body);
   const { email, password } = req.body;
 
   try {
@@ -111,9 +116,10 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
+    console.log('Checking password...');
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      console.log('Incorrect password for user:', email);
+      console.log('Password mismatch for user:', email);
       return res.status(400).json({ message: 'Incorrect password' });
     }
 
@@ -121,13 +127,14 @@ app.post('/login', async (req, res) => {
     console.log('Login successful for user:', email);
     res.status(200).json({ message: 'Login successful' });
   } catch (error) {
-    console.error('Error during login:', error);
+    console.error('Error during login process:', error);
     res.status(500).json({ message: 'Internal server error during login' });
   }
 });
 
 // Route to handle logout
 app.post('/logout', (req, res) => {
+  console.log('Received logout request');
   req.session.destroy((err) => {
     if (err) {
       console.error('Error during logout:', err);
@@ -141,78 +148,80 @@ app.post('/logout', (req, res) => {
 
 // Route to handle product updates
 app.post('/update-product', async (req, res) => {
-  console.log('Received request to update products');
-  console.log('Request body:', req.body); // Log the entire request body
+  console.log('Received request to update products:', req.body); // Log the request body
 
   const { email, products } = req.body;
 
-  console.log('Parsed email:', email); // Log the parsed email
-
   if (!email || !Array.isArray(products)) {
-    console.error('Invalid request: missing email or products');
-    return res.status(400).json({ message: 'Invalid request: missing email or products' });
+    console.error('Invalid request: Missing email or products');
+    return res.status(400).json({ message: 'Invalid request: Missing email or products' });
   }
 
   if (products.length === 0) {
-    console.error('Invalid request: products array is empty');
-    return res.status(400).json({ message: 'Invalid request: products array is empty' });
+    console.error('Invalid request: Products array is empty');
+    return res.status(400).json({ message: 'Invalid request: Products array is empty' });
   }
 
+  // Check for valid product data
   for (const product of products) {
+    console.log('Checking product:', product); // Log each product for debugging
     if (
       !product.name ||
       !product.code ||
       typeof product.price !== 'number' ||
       typeof product.quantity !== 'number'
     ) {
-      console.error('Invalid product data:', product);
+      console.error('Invalid product data found:', product);
       return res.status(400).json({ message: 'Invalid product data' });
     }
   }
 
   try {
+    console.log('Fetching user by email:', email);
     const user = await User.findOne({ email });
     if (!user) {
       console.error('User not found for email:', email);
       return res.status(400).json({ message: 'User not found' });
     }
 
+    console.log('Updating user products for email:', email);
     user.products = products;
     await user.save();
     console.log('Products updated successfully for user:', email);
     res.status(200).json({ message: 'Products updated successfully' });
   } catch (error) {
-    console.error('Error updating products:', error);
+    console.error('Error during product update:', error);
     res.status(500).json({ message: 'Error updating products', error: error.message });
   }
 });
 
-
-app.post('/test-body', (req, res) => {
-  console.log('Received request body:', req.body); // Log request body
-  res.json(req.body); // Echo back the body
-});
-
-// Test route
+// Test route to verify server status
 app.get('/test', (req, res) => {
+  console.log('Test endpoint hit');
   res.json({ message: 'Server is running correctly' });
 });
 
-// Catch-all route
+// Test route to handle raw body requests
+app.post('/test-body', (req, res) => {
+  console.log('Received test body request:', req.body); // Log the request body for inspection
+  res.json(req.body); // Echo back the body
+});
+
+// Catch-all route for 404
 app.use((req, res) => {
-  console.log(`404 - Not Found: ${req.method} ${req.url}`);
+  console.error(`404 - Not Found: ${req.method} ${req.url}`);
   res.status(404).send('Not found');
 });
 
-// Error handling middleware
+// Global error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
+  console.error('Unhandled error occurred:', err);
   res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
   console.log(`http://localhost:${PORT}`);
 });

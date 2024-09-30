@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Product.css'; 
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
-const Product = ({ onShowPopup, email }) => {
+const Product = ({ onShowPopup }) => {
   const [products, setProducts] = useState([
     { id: 1, name: '', code: '', price: 0, quantity: 0 },
   ]);
+  const location = useLocation();
+  const email = location.state?.email; // Retrieve the email from the location state
 
+  console.log(email)
+
+  // Log products and email whenever they change
   useEffect(() => {
     console.log('Products state changed:', products);
-  }, [products]);
+    console.log('Email state:', email);  // Log the email state
+  }, [products, email]);
 
+  // Add product
   const handleAdd = () => {
     const allFieldsFilled = products.every(product =>
       product.name && product.code && product.price > 0 && product.quantity > 0
     );
-  
+
     if (allFieldsFilled) {
       const newProduct = {
         id: products.length + 1,
@@ -26,36 +34,52 @@ const Product = ({ onShowPopup, email }) => {
       };
       const updatedProducts = [...products, newProduct];
       setProducts(updatedProducts);
+      console.log('Added new product:', newProduct);  // Log the newly added product
     } else {
-      onShowPopup();
+      onShowPopup(); // Show popup if fields are incomplete
     }
   };
 
+  // Update product fields dynamically
   const handleUpdate = (id, field, value) => {
     setProducts(products.map(product =>
-      product.id === id ? { ...product, [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value } : product
+      product.id === id ? { 
+        ...product, 
+        [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value 
+      } : product
     ));
+    console.log(`Updated product ${id}:`, products.find(product => product.id === id)); // Log updated product
   };
 
+  // Delete product
   const handleDelete = (id) => {
     setProducts(products.filter(product => product.id !== id));
+    console.log('Deleted product with id:', id); // Log deleted product ID
   };
 
+  // Save products to the backend
   const handleSave = async () => {
+    if (!email) {
+      console.error('Email is not defined or invalid');
+      alert('User email is missing. Cannot save products.');
+      return; // Exit early if email is not provided
+    }
+
     try {
       console.log('Sending request to update products...');
       const payload = {
-        email,
-        products
+        email,  // Ensure email is sent
+        products,
       };
-      console.log('Payload:', payload);
-  
+      console.log('Payload:', payload);  // Log the request payload
+
       const response = await axios.post('http://localhost:5000/update-product', payload, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true, // If your backend requires session cookies/auth
       });
-      
+
       console.log('Server response:', response.data);
       alert('Products updated successfully');
     } catch (error) {
@@ -63,8 +87,7 @@ const Product = ({ onShowPopup, email }) => {
       alert(`Error updating products: ${error.response?.data?.message || error.message}`);
     }
   };
-  
-  
+
   return (
     <div className="product-table">
       <table>
