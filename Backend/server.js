@@ -118,14 +118,17 @@ app.post('/login', async (req, res) => {
 
     console.log('Checking password...');
     const match = await bcrypt.compare(password, user.password);
+    console.log(match)
     if (!match) {
       console.log('Password mismatch for user:', email);
       return res.status(400).json({ message: 'Incorrect password' });
     }
 
-    req.session.userId = user._id; // Store user ID in session
+    req.session.userId = user._id; 
     console.log('Login successful for user:', email);
-    res.status(200).json({ message: 'Login successful' });
+    const token = await bcrypt.hash(password, 10);
+    console.log(token)
+    res.status(200).json({ message: 'Login successful',token });
   } catch (error) {
     console.error('Error during login process:', error);
     res.status(500).json({ message: 'Internal server error during login' });
@@ -185,7 +188,7 @@ app.post('/update-product', async (req, res) => {
     }
 
     console.log('Updating user products for email:', email);
-    user.products = products;
+    user.products.push(...products);
     await user.save();
     console.log('Products updated successfully for user:', email);
     res.status(200).json({ message: 'Products updated successfully' });
