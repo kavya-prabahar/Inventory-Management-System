@@ -150,6 +150,7 @@ app.post('/logout', (req, res) => {
 });
 
 // Route to handle product updates
+// Route to handle product updates
 app.post('/update-product', async (req, res) => {
   console.log('Received request to update products:', req.body); // Log the request body
 
@@ -187,9 +188,24 @@ app.post('/update-product', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    console.log('Updating user products for email:', email);
-    user.products.push(...products);
-    await user.save();
+    // Update or add products
+    products.forEach(product => {
+      const existingProduct = user.products.find(p => p.id === product.id);
+      if (existingProduct) {
+        // Update existing product
+        existingProduct.name = product.name;
+        existingProduct.code = product.code;
+        existingProduct.price = product.price;
+        existingProduct.quantity = product.quantity;
+        console.log(`Updated product with id: ${product.id}`);
+      } else {
+        // Add new product
+        user.products.push(product);
+        console.log(`Added new product with id: ${product.id}`);
+      }
+    });
+
+    await user.save(); // Save the changes to the database
     console.log('Products updated successfully for user:', email);
     res.status(200).json({ message: 'Products updated successfully' });
   } catch (error) {
@@ -197,6 +213,7 @@ app.post('/update-product', async (req, res) => {
     res.status(500).json({ message: 'Error updating products', error: error.message });
   }
 });
+
 
 // Test route to verify server status
 app.get('/test', (req, res) => {

@@ -58,15 +58,16 @@ const Product = ({ onShowPopup }) => {
   };
 
   // Save products to the backend
+  // Save products to the backend
   const handleSave = async () => {
     if (!email) {
       console.error('Email is not defined or invalid');
       alert('User email is missing. Cannot save products.');
-      return; // Exit early if email is not provided
+      return;
     }
 
     try {
-      console.log('Sending request to update products...');
+      console.log('Sending request to update or add products...');
       const payload = {
         email,  // Ensure email is sent
         products,
@@ -87,6 +88,7 @@ const Product = ({ onShowPopup }) => {
       alert(`Error updating products: ${error.response?.data?.message || error.message}`);
     }
   };
+
 
   return (
     <div className="product-table">
