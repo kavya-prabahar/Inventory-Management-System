@@ -10,7 +10,7 @@ const Product = ({ onShowPopup }) => {
   const location = useLocation();
   const email = location.state?.email; // Retrieve the email from the location state
 
-  console.log(email)
+  console.log(email);
 
   // Log products and email whenever they change
   useEffect(() => {
@@ -48,22 +48,56 @@ const Product = ({ onShowPopup }) => {
         [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value 
       } : product
     ));
+
     console.log(`Updated product ${id}:`, products.find(product => product.id === id)); // Log updated product
   };
 
-  // Delete product
-  const handleDelete = (id) => {
-    setProducts(products.filter(product => product.id !== id));
-    console.log('Deleted product with id:', id); // Log deleted product ID
+  const handleDelete = async (productCode) => {
+    if (!email) {
+      console.error('Email is not defined or invalid');
+      alert('User email is missing. Cannot delete product.');
+      return;
+    }
+  
+    try {
+      console.log(`Sending request to delete product with code: ${productCode}`);
+  
+      const response = await axios.delete('http://localhost:5000/delete-product', {
+        data: { email, code: productCode },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+  
+      console.log('Server response:', response.data);
+      alert('Product deleted successfully');
+      setProducts(products.filter(product => product.code !== productCode)); // Update state after deletion
+    } catch (error) {
+      console.error('Error deleting product:', error.response?.data || error.message);
+      alert(`Error deleting product: ${error.response?.data?.message || error.message}`);
+    }
   };
-
-  // Save products to the backend
+  
   // Save products to the backend
   const handleSave = async () => {
     if (!email) {
       console.error('Email is not defined or invalid');
       alert('User email is missing. Cannot save products.');
       return;
+    }
+
+    // Validate all products only when saving
+    for (const product of products) {
+      if (product.code.length !== 8) {
+        alert(`Product code for ${product.name} must be exactly 8 characters long.`);
+        return;
+      }
+      const isDuplicate = products.some(p => p.code === product.code && p.id !== product.id);
+      if (isDuplicate) {
+        alert(`Product code ${product.code} must be unique.`);
+        return;
+      }
     }
 
     try {
@@ -88,7 +122,6 @@ const Product = ({ onShowPopup }) => {
       alert(`Error updating products: ${error.response?.data?.message || error.message}`);
     }
   };
-
 
   return (
     <div className="product-table">
@@ -141,8 +174,9 @@ const Product = ({ onShowPopup }) => {
               </td>
               <td>
                 <button className="Add" onClick={() => handleUpdate(product.id, 'quantity', product.quantity + 1)}>+</button>
-                <button className="Subtract" onClick={() => handleUpdate(product.id, 'quantity', product.quantity - 1)}>-</button>
-                <button className="Delete" onClick={() => handleDelete(product.id)}>Delete</button>
+                <button className="Subtract" onClick={() => handleUpdate(product.id, 'quantity', Math.max(product.quantity - 1, 0))}>-</button>
+                <button className="Delete" onClick={() => handleDelete(product.code)}>Delete</button>
+
               </td>
             </tr>
           ))}

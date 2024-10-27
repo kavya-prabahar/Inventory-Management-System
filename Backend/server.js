@@ -149,7 +149,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Route to handle product updates
+
 // Route to handle product updates
 app.post('/update-product', async (req, res) => {
   console.log('Received request to update products:', req.body); // Log the request body
@@ -211,6 +211,44 @@ app.post('/update-product', async (req, res) => {
   } catch (error) {
     console.error('Error during product update:', error);
     res.status(500).json({ message: 'Error updating products', error: error.message });
+  }
+});
+
+// Route to handle product deletion by product code
+app.delete('/delete-product', async (req, res) => {
+  console.log('Received request to delete product:', req.body);
+
+  const { email, code } = req.body; // Get email and product code from request body
+
+  if (!email || !code) {
+    console.error('Invalid request: Missing email or product code');
+    return res.status(400).json({ message: 'Invalid request: Missing email or product code' });
+  }
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error('User not found for email:', email);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Find the product by code and delete it
+    const initialProductCount = user.products.length;
+    user.products = user.products.filter(product => product.code !== code);
+
+    // Check if a product was deleted
+    if (user.products.length === initialProductCount) {
+      console.error('Product not found for code:', code);
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    await user.save(); // Save changes to the database
+    console.log('Product deleted successfully with code:', code);
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error during product deletion:', error);
+    res.status(500).json({ message: 'Error deleting product', error: error.message });
   }
 });
 
