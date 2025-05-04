@@ -5,18 +5,50 @@ import { useLocation } from 'react-router-dom';
 
 const Product = ({ onShowPopup }) => {
   const [products, setProducts] = useState([
-    { id: 1, name: '', code: '', price: 0, quantity: 0 },
+    { id: 1, name:'', code: '', price: 0, quantity: 0, nameUpdated: false },
   ]);
   const location = useLocation();
-  const email = location.state?.email; // Retrieve the email from the location state
+  const [productlist, setProductlist] = useState([]);
+  const email = location.state?.email || localStorage.getItem('userEmail');
+  const [isLoaded, setIsLoaded] = useState(false);
+  // Retrieve the email from the location state
 
   console.log(email);
 
-  // Log products and email whenever they change
+  // Fetch user products when the email changes
   useEffect(() => {
-    console.log('Products state changed:', products);
-    console.log('Email state:', email);  // Log the email state
-  }, [products, email]);
+    const fetchProducts = async () => {
+      if (!email) return;
+
+      try {
+        const response = await axios.get(`http://localhost:5000/user-products?email=${email}`, {
+          withCredentials: true,
+        });
+        
+        // Set productList with the fetched list
+        setProductlist(response.data.productlist || []);
+        
+        // Update products with name from productList using the code
+        const updatedProducts = response.data.products.map(product => ({
+          ...product,
+          name: response.data.productlist.find(p => p.code === product.code)?.name || '',
+          nameUpdated: false,  // Initially not updated
+        }));
+
+        setProducts(updatedProducts);
+        setIsLoaded(true);
+        console.log("Updated products state:", updatedProducts);
+        console.log("Fetched productlist:", response.data.productlist);
+
+        
+        console.log('Fetched products:', response.data.products); // Log fetched products
+      } catch (error) {
+        console.error('Error fetching products:', error.response?.data || error.message);
+      }
+    };
+
+    fetchProducts();
+  }, [email]); // Dependency array only includes email, avoiding infinite loop
 
   // Add product
   const handleAdd = () => {
@@ -31,6 +63,7 @@ const Product = ({ onShowPopup }) => {
         code: '',
         price: 0,
         quantity: 0,
+        nameUpdated: false,
       };
       const updatedProducts = [...products, newProduct];
       setProducts(updatedProducts);
@@ -58,10 +91,10 @@ const Product = ({ onShowPopup }) => {
       alert('User email is missing. Cannot delete product.');
       return;
     }
-  
+
     try {
       console.log(`Sending request to delete product with code: ${productCode}`);
-  
+
       const response = await axios.delete('http://localhost:5000/delete-product', {
         data: { email, code: productCode },
         headers: {
@@ -69,7 +102,7 @@ const Product = ({ onShowPopup }) => {
         },
         withCredentials: true,
       });
-  
+
       console.log('Server response:', response.data);
       alert('Product deleted successfully');
       setProducts(products.filter(product => product.code !== productCode)); // Update state after deletion
@@ -78,7 +111,7 @@ const Product = ({ onShowPopup }) => {
       alert(`Error deleting product: ${error.response?.data?.message || error.message}`);
     }
   };
-  
+
   // Save products to the backend
   const handleSave = async () => {
     if (!email) {
@@ -86,11 +119,15 @@ const Product = ({ onShowPopup }) => {
       alert('User email is missing. Cannot save products.');
       return;
     }
-
-    // Validate all products only when saving
+  
+    // Validate essential fields
     for (const product of products) {
-      if (product.code.length !== 8) {
-        alert(`Product code for ${product.name} must be exactly 8 characters long.`);
+      if (!product.code || product.code.length !== 8) {
+        alert(`Product code must be exactly 8 characters long.`);
+        return;
+      }
+      if (product.price <= 0 || product.quantity <= 0) {
+        alert(`Price and quantity must be greater than 0.`);
         return;
       }
       const isDuplicate = products.some(p => p.code === product.code && p.id !== product.id);
@@ -99,22 +136,47 @@ const Product = ({ onShowPopup }) => {
         return;
       }
     }
-
+  
+    // Update names using productList (only if name is missing or placeholder)
+    const updatedProducts = products.map(product => {
+      const isNameMissing = !product.name || product.name === 'whatever';
+      if (isNameMissing) {
+        const matchedProduct = productlist.find(p => p.code === product.code);
+        return {
+          ...product,
+          name: matchedProduct ? matchedProduct.name : '', // leave blank if not found
+          nameUpdated: true,
+        };
+      }
+      return product;
+    });
+  
+    // Final check after name assignment
+    for (const product of updatedProducts) {
+      if (!product.name) {
+        const availableCodes = productlist.map(p => p.code).join(', ');
+        alert(`Product name for code ${product.code} not found in the database.\nAvailable codes: ${availableCodes}`);
+        return;
+      }
+    }
+    
+  
     try {
       console.log('Sending request to update or add products...');
       const payload = {
-        email,  // Ensure email is sent
-        products,
+        email,
+        products: updatedProducts,
       };
-      console.log('Payload:', payload);  // Log the request payload
-
+      console.log('Payload:', payload);
+  
       const response = await axios.post('http://localhost:5000/update-product', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
-        withCredentials: true, // If your backend requires session cookies/auth
+        withCredentials: true,
       });
-
+  
+      setProducts(updatedProducts); // Keep updated names in the UI
       console.log('Server response:', response.data);
       alert('Products updated successfully');
     } catch (error) {
@@ -122,9 +184,10 @@ const Product = ({ onShowPopup }) => {
       alert(`Error updating products: ${error.response?.data?.message || error.message}`);
     }
   };
+  
 
   return (
-    <div className="product-table">
+    <div className={`product-table ${isLoaded ? 'loaded' : ''}`}>
       <table>
         <thead>
           <tr>
@@ -132,7 +195,7 @@ const Product = ({ onShowPopup }) => {
             <th>Product Name</th>
             <th>Product Code</th>
             <th>Price</th>
-            <th>No. of Quantity</th>
+            <th>Quantity</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -145,6 +208,7 @@ const Product = ({ onShowPopup }) => {
                   type="text"
                   value={product.name}
                   onChange={(e) => handleUpdate(product.id, 'name', e.target.value)}
+                  disabled={!product.nameUpdated} // Initially disabled, then can be edited after saving
                   required
                 />
               </td>
@@ -176,7 +240,6 @@ const Product = ({ onShowPopup }) => {
                 <button className="Add" onClick={() => handleUpdate(product.id, 'quantity', product.quantity + 1)}>+</button>
                 <button className="Subtract" onClick={() => handleUpdate(product.id, 'quantity', Math.max(product.quantity - 1, 0))}>-</button>
                 <button className="Delete" onClick={() => handleDelete(product.code)}>Delete</button>
-
               </td>
             </tr>
           ))}

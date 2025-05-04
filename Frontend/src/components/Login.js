@@ -21,22 +21,38 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       });
-
-      const data = await response.json();
-
+    
+      let data;
+      try {
+        data = await response.json(); // might fail if body is not JSON
+        console.log('Login response:', data);
+      } catch (jsonErr) {
+        console.error('Error parsing JSON:', jsonErr);
+        data = {}; // fallback to empty object
+      }
+    
+  
       if (response.ok) {
-        localStorage.setItem('authToken', data.token); // Store the token
-        navigate('/Productpage', { state: { email } }); // Pass the email as part of the state
+        const userEmail = data.email || email; // fallback to email from state
+    
+        localStorage.setItem('authToken', data.token || '');
+        localStorage.setItem('userEmail', userEmail);
+        
+        navigate('/Productpage', { state: { email: userEmail } });
       } else {
         setPopupMessage(data.message || 'Login failed');
         setShowPopup(true);
       }
+    
     } catch (error) {
+      console.error('Network or fetch error:', error);
       setPopupMessage('An error occurred. Please try again.');
       setShowPopup(true);
     }
   };
+
 
   return (
     <div className="form-login">

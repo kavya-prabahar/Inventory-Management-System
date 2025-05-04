@@ -1,0 +1,33 @@
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.profile-popup {
+  position: absolute;
+  top: 50px; /* adjust based on image size */
+  left: 0px;
+  right: 50px;
+  background-color: white;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  padding: 10px;
+  width: 250px;
+  z-index: 999;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: black;
+}
+
+.profile-popup p strong {
+  color: rgb(50, 2, 154); /* Update the color for the headings */
+}

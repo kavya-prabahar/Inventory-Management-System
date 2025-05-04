@@ -3,7 +3,6 @@
   padding: 30px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  overflow-x: auto;
   max-width: 1200px; /* Adjust according to your design */
 }
 
@@ -13,7 +12,7 @@ table {
 }
 
 th, td {
-  padding: 15px;
+  padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
 }
@@ -22,6 +21,7 @@ th {
   background-color: #f4f4f4;
   font-weight: bold;
 }
+
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
@@ -65,6 +65,22 @@ button:hover {
 }
 
 .SaveButton:hover {
+  background-color: #1e1e8d;
+}
+
+.AddSalesButton {
+  background-color: #0dab20;
+}
+
+.AddSalesButton:hover {
+  background-color: #0d8e1c;
+}
+
+.SaveSalesButton {
+  background-color: #3232aa;
+}
+
+.SaveSalesButton:hover {
   background-color: #1e1e8d;
 }
 

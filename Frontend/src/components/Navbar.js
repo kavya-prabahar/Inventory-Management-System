@@ -45,13 +45,19 @@ const Navbar = () => {
             <i>InvenTrack</i>
           </li>
           <li className="nav-list-item">
-            <Link to="/">HOME</Link>
+            <Link to="/" className={location.pathname === "/" ? "active" : ""}>HOME</Link>
           </li>
           <li className="nav-list-item">
-            <Link to="/Productpage">PRODUCTS</Link>
+            <Link to="/ProductListPage" className={location.pathname === "/ProductListPage" ? "active" : ""}>PRODUCTS</Link>
           </li>
           <li className="nav-list-item">
-            <Link to="/Contactpage">CONTACT</Link>
+            <Link to="/Productpage" className={location.pathname === "/Productpage" ? "active" : ""}>INVENTORY</Link>
+          </li>
+          <li className="nav-list-item">
+            <Link to="/Salespage" className={location.pathname === "/Salespage" ? "active" : ""}>SALES</Link>
+          </li>
+          <li className="nav-list-item">
+            <Link to="/Contactpage" className={location.pathname === "/Contactpage" ? "active" : ""}>CONTACT</Link>
           </li>
         </ul>
       </div>

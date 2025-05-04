@@ -5,11 +5,34 @@ import QuerySuccessPopup from './QuerySuccessPopup';
 const ContactUs = () => {
   const [showPopup, setShowPopup] = useState(false); 
 
-  const handleButtonClick = (event) => {
-    event.preventDefault(); 
-    setShowPopup(true); // Show popup on button click
+  const handleButtonClick = async (event) => {
+    event.preventDefault();
+  
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+  
+    try {
+      const response = await fetch('http://localhost:5000/submit-query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+  
+      if (response.ok) {
+        setShowPopup(true);
+        document.getElementById('contactForm').reset(); // Clear the form
+      } else {
+        alert('Failed to submit query. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting query:', error);
+      alert('An error occurred. Please try again later.');
+    }
   };
-
+  
   const closePopup = () => {
     setShowPopup(false); // Hide popup when closed
   };
