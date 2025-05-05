@@ -29,7 +29,10 @@ app.use(
       mongoUrl: 'mongodb://127.0.0.1:27017/ims',
       ttl: 24 * 60 * 60,
     }),
-    cookie: { secure: false }, // Set `secure: true` if using HTTPS
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+      secure: false, // Set to true if using HTTPS
+    }, // Set `secure: true` if using HTTPS
   })
 );
 
@@ -498,7 +501,6 @@ app.post('/add-sales', async (req, res) => {
         time: sale.time,
         date: sale.date,
       });
-  
     }
 
     await user.save();
@@ -549,6 +551,28 @@ app.post('/submit-query', async (req, res) => {
   } catch (error) {
     console.error('Error saving query:', error);
     res.status(500).json({ message: 'Error saving query' });
+  }
+});
+
+app.post('/get-sales-by-date', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const salesByDate = {};
+
+    for (const sale of user.sales) {
+      if (!salesByDate[sale.date]) {
+        salesByDate[sale.date] = [];
+      }
+      salesByDate[sale.date].push(sale);
+    }
+
+    res.status(200).json(salesByDate);
+  } catch (err) {
+    console.error('Error fetching sales:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

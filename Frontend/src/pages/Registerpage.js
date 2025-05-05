@@ -40,7 +40,6 @@ const Registerpage = () => {
 
   return (
     <div>
-      <Navbar />
       <Register 
         onRegisterClick={handleRegisterClick} 
         onShowErrorPopup={handleShowErrorPopup} 

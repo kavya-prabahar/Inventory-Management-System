@@ -201,7 +201,7 @@ const Product = ({ onShowPopup }) => {
         </thead>
         <tbody>
           {products.map((product, index) => (
-            <tr key={product.id}>
+            <tr key={product.id} className={product.quantity < 10 ? 'low-stock' : ''}>
               <td>{index + 1}</td>
               <td>
                 <input

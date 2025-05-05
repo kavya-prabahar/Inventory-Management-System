@@ -34,7 +34,6 @@ const Contactpage = () => {
 
   return (
     <div>
-      <Navbar />
       <ContactUs onSubmit={handleSubmit} />
       <QuerySuccessPopup show={showSuccessPopup} onClose={closePopup} /> 
     </div>

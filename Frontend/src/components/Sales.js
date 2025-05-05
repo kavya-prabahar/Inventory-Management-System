@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/Product.css'
-import '../styles/sales.css'
+import '../styles/Product.css';
+import '../styles/sales.css';
 
 function Sales({ userEmail }) {
   const [productList, setProductList] = useState([]);
   const [products, setProducts] = useState([]);
+  const [activeTab, setActiveTab] = useState('add');
+  const [salesData, setSalesData] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const [sales, setSales] = useState([
     { id: 1, name: '', code: '', price: 0, quantity: 0, total: 0 }
   ]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-
   useEffect(() => {
     const email = localStorage.getItem('userEmail');
     const fetchData = async () => {
       try {
-        const res = await axios.post('http://localhost:5000/get-user-data', {email},{
-            withCredentials: true,
-          });
+        const res = await axios.post('http://localhost:5000/get-user-data', { email }, {
+          withCredentials: true,
+        });
         setProductList(res.data.productlist);
         setProducts(res.data.products);
         setIsLoaded(true);
@@ -27,13 +30,34 @@ function Sales({ userEmail }) {
       }
     };
     if (email) {
-        fetchData(); // Only fetch data if the email exists
-      }
-    }, []);
+      fetchData(); // Only fetch data if the email exists
+    }
+  }, []);
+
+  useEffect(() => {
+    const email = localStorage.getItem('userEmail');
+    if (activeTab === 'view') {
+      fetchSales();
+    }
+  }, [activeTab]);
+
+  const fetchSales = async () => {
+    const email = localStorage.getItem('userEmail');
+    try {
+      const res = await axios.post('http://localhost:5000/get-sales-by-date', { email });
+      setSalesData(res.data);
+    } catch (err) {
+      console.error('Error fetching sales data:', err);
+    }
+  };
 
   const handleChange = (index, field, value) => {
     const updatedSales = [...sales];
     updatedSales[index][field] = value;
+
+    if (field === 'quantity' && value < 0) {
+      updatedSales[index].quantity = 0;  // Set to 0 if negative value is entered
+    }
 
     // Auto-fill name and price from productList/products
     if (field === 'code') {
@@ -48,7 +72,7 @@ function Sales({ userEmail }) {
 
     if (field === 'quantity') {
       const price = updatedSales[index].price || 0;
-      updatedSales[index].total = price * value;
+      updatedSales[index].total = price * (parseInt(value) || 0);
     }
 
     setSales(updatedSales);
@@ -79,15 +103,15 @@ function Sales({ userEmail }) {
       alert(res.data.message);
 
       // Reset with last 5 entries shown
-      setSales([salesList[salesList.length - 1]]);
+      setSales([{ id: 1, name: '', code: '', price: 0, quantity: 0, total: 0 }]);
     } catch (err) {
       console.error('Error saving sales:', err);
       alert('Failed to save sales');
     }
   };
 
-  return (
-    <div className={`product-table ${isLoaded ? 'loaded' : ''}`}>
+  const renderAddSales = () => (
+    <div className="product-table">
       <table>
         <thead>
           <tr>
@@ -104,31 +128,92 @@ function Sales({ userEmail }) {
             <tr key={index}>
               <td>{index + 1}</td>
               <td><input type="text" value={sale.name} disabled /></td>
-              <td>
-                <input
-                  type="text"
-                  value={sale.code}
-                  onChange={(e) => handleChange(index, 'code', e.target.value)}
-                />
-              </td>
+              <td><input type="text" value={sale.code} onChange={(e) => handleChange(index, 'code', e.target.value)} /></td>
               <td><input type="number" value={sale.price} disabled /></td>
-              <td>
-                <input
-                  type="number"
-                  value={sale.quantity}
-                  onChange={(e) => handleChange(index, 'quantity', parseInt(e.target.value))}
-                />
-              </td>
+              <td><input type="number" value={sale.quantity} onChange={(e) => handleChange(index, 'quantity', e.target.value)} /></td>
               <td><input type="number" value={sale.total} disabled /></td>
             </tr>
           ))}
         </tbody>
       </table>
-
       <div className="buttons">
-        <button className = "AddSalesButton" onClick={handleAddRow}>Add Sales</button>
-        <button className = "SaveSalesButton" onClick={handleSaveSales}>Save Sales</button>
+        <button className="AddSalesButton" onClick={handleAddRow}>Add Sales</button>
+        <button className="SaveSalesButton" onClick={handleSaveSales}>Save Sales</button>
       </div>
+    </div>
+  );
+
+  const renderSalesTable = () => {
+    const salesForDate = salesData[selectedDate] || [];
+    const totalForDate = salesForDate.reduce((sum, s) => sum + s.total, 0);
+
+    return (
+      <div className="product-table">
+        <h3 className="sales-date-heading">Sales on {selectedDate}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Code</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {salesForDate.map((sale, idx) => (
+              <tr key={idx}>
+                <td>{sale.name}</td>
+                <td>{sale.code}</td>
+                <td>{sale.price}</td>
+                <td>{sale.quantity}</td>
+                <td>{sale.total}</td>
+                <td>{sale.time}</td>
+              </tr>
+            ))}
+            <tr style={{ fontWeight: 'bold' }}>
+              <td colSpan="4">Total</td>
+              <td>{totalForDate}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const renderViewSales = () => (
+    <div className="view-sales-container">
+      <h4 className="date-selection">Choose the date for which sales have to be viewed</h4>
+      <div className="date-buttons">
+        {Object.keys(salesData).map(date => (
+          <button key={date} onClick={() => setSelectedDate(date)} className="date-btn">
+            {date}
+          </button>
+        ))}
+      </div>
+      {selectedDate && renderSalesTable()}
+    </div>
+  );
+
+  return (
+    <div className="sales-wrapper">
+      <div className="tab-buttons">
+        <button 
+          onClick={() => setActiveTab('add')} 
+          className={`tab-button ${activeTab === 'add' ? 'active' : ''}`}
+        >
+          Add Sales
+        </button>
+        <button 
+          onClick={() => setActiveTab('view')} 
+          className={`tab-button ${activeTab === 'view' ? 'active' : ''}`}
+        >
+          View Sales
+        </button>
+      </div>
+      {activeTab === 'add' ? renderAddSales() : renderViewSales()}
     </div>
   );
 }

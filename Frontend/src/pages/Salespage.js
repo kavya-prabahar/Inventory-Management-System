@@ -16,7 +16,6 @@ const Salespage = () => {
 
   return (
     <div>
-      <Navbar />
       <Sales onShowPopup={handleShowPopup} />
       <AddPopup show={showPopup} onClose={handleClosePopup} />
     </div>
