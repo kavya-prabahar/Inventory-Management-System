@@ -23,7 +23,7 @@ th {
 }
 
 
-tr:nth-child(even) {
+tr:nth-child(even):not(.low-stock) {
   background-color: #f9f9f9;
 }
 
@@ -117,3 +117,47 @@ button:hover {
   background-color: #ffe6e6; /* light red background */
 }
 
+.button-row-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-left: 190px;
+  justify-content: center;
+  flex: 1;
+  width: 77%;
+  margin-top: 0px;
+}
+
+.min-quantity {
+  margin-top: 30px;
+  width: 23%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.min-quantity label {
+  font-size: 16px;
+  color: rgb(50, 2, 154);
+  margin-right: 10px;
+}
+
+.min-value {
+  width: 100px;
+  padding: 2px 6px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid black;
+  text-align: center;
+  
+}

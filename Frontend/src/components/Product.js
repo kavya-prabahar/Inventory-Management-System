@@ -9,6 +9,7 @@ const Product = ({ onShowPopup }) => {
   ]);
   const location = useLocation();
   const [productlist, setProductlist] = useState([]);
+  const [minQuantity, setMinQuantity] = useState(10);
   const email = location.state?.email || localStorage.getItem('userEmail');
   const [isLoaded, setIsLoaded] = useState(false);
   // Retrieve the email from the location state
@@ -201,7 +202,7 @@ const Product = ({ onShowPopup }) => {
         </thead>
         <tbody>
           {products.map((product, index) => (
-            <tr key={product.id} className={product.quantity < 10 ? 'low-stock' : ''}>
+            <tr key={product.id} className={product.quantity < minQuantity ? 'low-stock' : ''}>
               <td>{index + 1}</td>
               <td>
                 <input
@@ -245,11 +246,32 @@ const Product = ({ onShowPopup }) => {
           ))}
         </tbody>
       </table>
-      <div className="buttons">
-        <button className="AddProductButton" onClick={handleAdd}>Add Product</button>
-        <button className="SaveButton" onClick={handleSave}>Save Products</button>
+      <div className="button-row-container">
+        <div className="buttons">
+          <button className="AddProductButton" onClick={handleAdd}>Add Product</button>
+          <button className="SaveButton" onClick={handleSave}>Save Products</button>
+        </div>
+
+        <div className="min-quantity">
+          <label htmlFor="minQuantity">Low Stock Threshold </label>
+          <input
+            id="minQuantity"
+            className="min-value"
+            type="number"
+            min="1"
+            onChange={(e) => {
+              const val = parseInt(e.target.value);
+              setMinQuantity(isNaN(val) ? 10 : val);
+            }}
+            value={minQuantity}
+            onBlur={() => {
+              if (minQuantity === '' || minQuantity === 0) setMinQuantity(10);
+            }}
+          />
+        </div>
       </div>
     </div>
+
   );
 };
 
