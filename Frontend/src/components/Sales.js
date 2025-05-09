@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/Product.css';
 import '../styles/sales.css';
 
 function Sales({ userEmail }) {
@@ -136,9 +135,11 @@ function Sales({ userEmail }) {
           ))}
         </tbody>
       </table>
+      <div className="button-row-container">
       <div className="buttons">
         <button className="AddSalesButton" onClick={handleAddRow}>Add Sales</button>
         <button className="SaveSalesButton" onClick={handleSaveSales}>Save Sales</button>
+      </div>
       </div>
     </div>
   );

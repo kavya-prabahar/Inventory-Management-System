@@ -18,11 +18,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5000/logout', {
-        method: 'POST',
-        credentials: 'include' // Include cookies (session) in the request
-      });
-      localStorage.removeItem('authToken'); // Clear any auth token if used
+      localStorage.removeItem('authToken'); // Clear the JWT token
       navigate('/Loginpage');
     } catch (error) {
       console.error('Logout error:', error);

@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -16,23 +15,6 @@ app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true,
-  })
-);
-
-// Session management middleware
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'default_secret',
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({
-      mongoUrl: 'mongodb://127.0.0.1:27017/ims',
-      ttl: 24 * 60 * 60,
-    }),
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      secure: false, // Set to true if using HTTPS
-    }, // Set `secure: true` if using HTTPS
   })
 );
 
@@ -136,63 +118,48 @@ app.post('/register', async (req, res) => {
 
 // Route to handle login
 app.post('/login', async (req, res) => {
-  console.log('Received login request:', req.body);
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      console.log('User not found:', email);
-      return res.status(400).json({ message: 'User not found' });
-    }
+    if (!user) return res.status(400).json({ message: 'User not found' });
 
-    console.log('Checking password...');
     const match = await bcrypt.compare(password, user.password);
-    console.log(match)
-    if (!match) {
-      console.log('Password mismatch for user:', email);
-      return res.status(400).json({ message: 'Incorrect password' });
-    }
+    if (!match) return res.status(400).json({ message: 'Incorrect password' });
 
-    req.session.userId = user._id; 
+    const payload = { userId: user._id, email: user.email, organization: user.organization };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-    console.log('Login successful for user:', email);
-
-    const token = await bcrypt.hash(password, 10);
-    console.log(token)
-
+    res.status(200).json({ message: 'Login successful', token, user: payload });
   } catch (error) {
-    console.error('Error during login process:', error);
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Internal server error during login' });
   }
 });
 
+// Middleware to verify JWT
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token provided' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+}
 
 // Endpoint to check if the user is logged in (and retrieve user info)
-app.get('/session', (req, res) => {
-  if (req.session.email) {
-    return res.status(200).json({
-      loggedIn: true,
-      email: req.session.email,
-      organization: req.session.organization,
-    });
-  }
-  return res.status(200).json({ loggedIn: false });
+app.get('/session', authenticateToken, (req, res) => {
+  res.status(200).json({ loggedIn: true, user: req.user });
 });
 
 
 // Route to handle logout
 app.post('/logout', (req, res) => {
-  console.log('Received logout request');
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error during logout:', err);
-      return res.status(500).json({ message: 'Internal server error during logout' });
-    }
-
-    console.log('Logout successful');
-    res.status(200).json({ message: 'Logout successful' });
-  });
+  console.log('Logout requested (JWT)');
+  res.status(200).json({ message: 'Logout successful. Please delete the token on client side.' });
 });
 
 

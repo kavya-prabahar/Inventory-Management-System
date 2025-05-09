@@ -36,8 +36,9 @@ const Login = () => {
   
       if (response.ok) {
         const userEmail = data.email || email; // fallback to email from state
+        const token = data.token || '';
     
-        localStorage.setItem('authToken', data.token || '');
+        localStorage.setItem('authToken', token);
         localStorage.setItem('userEmail', userEmail);
         
         navigate('/Productpage', { state: { email: userEmail } });

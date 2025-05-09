@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Product.css'; 
+import '../styles/Product.css'
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -247,7 +247,7 @@ const Product = ({ onShowPopup }) => {
         </tbody>
       </table>
       <div className="button-row-container">
-        <div className="buttons">
+        <div className="buttons-product">
           <button className="AddProductButton" onClick={handleAdd}>Add Product</button>
           <button className="SaveButton" onClick={handleSave}>Save Products</button>
         </div>

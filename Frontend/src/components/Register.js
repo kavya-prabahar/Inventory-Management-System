@@ -34,11 +34,15 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        setShowSuccessPopup(true);
-        navigate('/Productpage', { state: { email, organization } }); // Redirect to the product page
+        const data = await response.json();
+        const token = data.token || ''; // JWT token returned after registration
+      
+        localStorage.setItem('authToken', token); // Store JWT token
+        navigate('/Loginpage'); // Redirect to Product Page
       } else {
         setShowExistsPopup(true);
       }
+      
     } catch (error) {
       console.error('Error:', error);
     }

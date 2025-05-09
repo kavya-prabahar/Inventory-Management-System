@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/ProductList.css'; 
+import '../styles/ProductList.css'
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -172,11 +172,12 @@ useEffect(() => {
           ))}
         </tbody>
       </table>
-      <div className="buttons">
+      <div className="button-row-container"></div>
+      <div className="buttons-productlist">
         <button className="AddProductButton" onClick={handleAdd}>Add Product</button>
         <button className="SaveButton" onClick={handleSave}>Save Products</button>
       </div>
-    </div>
+      </div>
   );
 };
 
