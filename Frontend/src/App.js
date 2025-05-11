@@ -64,7 +64,7 @@ const PageWithFooter = ({ PageComponent }) => {
 // Zero blink router with global navbar and per-page content with footer
 const ZeroBlinkRouter = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Using useNavigate here to navigate
+  const navigate = useNavigate(); 
   const [loadedComponents, setLoadedComponents] = useState({});
   const componentRefs = useRef({});
   const redirectedRef = useRef(false);
@@ -95,7 +95,7 @@ const ZeroBlinkRouter = () => {
     const token = localStorage.getItem('authToken');
     const currentPath = location.pathname;
     const isProtected = protectedPaths.includes(currentPath);
-  
+
     if (isProtected) {
       if (!token) {
         if (!redirectedRef.current) {
@@ -130,7 +130,6 @@ const ZeroBlinkRouter = () => {
       redirectedRef.current = false; // Reset only when leaving protected page
     }
   }, [location.pathname, navigate]);
-  
 
   return (
     <div className="app-container" style={{
@@ -140,7 +139,7 @@ const ZeroBlinkRouter = () => {
       overflow: 'hidden'
     }}>
       <GlobalNavbar />
-
+      
       <div className="page-container" style={{
         flex: 1,
         position: 'relative',
@@ -194,6 +193,7 @@ const ZeroBlinkRouter = () => {
     </div>
   );
 };
+
 
 // Main App with scroll control
 const App = () => {
