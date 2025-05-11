@@ -14,8 +14,7 @@ function Sales({ userEmail }) {
   ]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    const email = localStorage.getItem('userEmail');
+  const email = localStorage.getItem('userEmail');
     const fetchData = async () => {
       try {
         const res = await axios.post('http://localhost:5000/get-user-data', { email }, {
@@ -28,10 +27,18 @@ function Sales({ userEmail }) {
         console.error('Error fetching product data:', err);
       }
     };
-    if (email) {
-      fetchData(); // Only fetch data if the email exists
-    }
-  }, []);
+
+  useEffect(() => {
+  const handleFetch = () => {
+    fetchData();
+  };
+  window.addEventListener('triggerFetchProducts', handleFetch);
+
+  return () => {
+    window.removeEventListener('triggerFetchProducts', handleFetch);
+  };
+}, []);
+
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail');

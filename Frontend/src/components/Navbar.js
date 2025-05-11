@@ -47,10 +47,22 @@ const Navbar = () => {
             <Link to="/ProductListPage" className={location.pathname === "/ProductListPage" ? "active" : ""}>PRODUCTS</Link>
           </li>
           <li className="nav-list-item">
-            <Link to="/Productpage" className={location.pathname === "/Productpage" ? "active" : ""}>INVENTORY</Link>
+            <Link
+              to="/Productpage"
+              className={location.pathname === "/Productpage" ? "active" : ""}
+              onClick={() => {
+                window.dispatchEvent(new Event('triggerFetchProducts'));
+              }}
+            >INVENTORY
+            </Link>
           </li>
           <li className="nav-list-item">
-            <Link to="/Salespage" className={location.pathname === "/Salespage" ? "active" : ""}>SALES</Link>
+            <Link
+              to="/Salespage"
+              className={location.pathname === "/Salespage" ? "active" : ""}
+              onClick={() => {
+                window.dispatchEvent(new Event('triggerFetchProducts'));
+              }}>SALES</Link>
           </li>
           <li className="nav-list-item">
             <Link to="/Contactpage" className={location.pathname === "/Contactpage" ? "active" : ""}>CONTACT</Link>

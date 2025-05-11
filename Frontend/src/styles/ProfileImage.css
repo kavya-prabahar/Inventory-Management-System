@@ -1,7 +1,10 @@
 .profile-container {
-  position: relative;
+  position: relative; 
   display: inline-block;
+  vertical-align: middle;
+  margin-left: auto;
 }
+
 
 .image-profile {
   width: 40px;
@@ -12,9 +15,10 @@
 
 .profile-popup {
   position: absolute;
-  top: 50px; /* adjust based on image size */
-  left: 0px;
+  top: 100%; /* adjust based on image size */
+  left: 50%;
   right: 50px;
+  transform: translateX(-50%);
   background-color: white;
   border: 1px solid #ccc;
   margin-top: 10px;
@@ -27,6 +31,7 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: black;
 }
+
 
 .profile-popup p strong {
   color: rgb(50, 2, 154); /* Update the color for the headings */

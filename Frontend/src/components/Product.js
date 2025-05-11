@@ -16,9 +16,7 @@ const Product = ({ onShowPopup }) => {
 
   console.log(email);
 
-  // Fetch user products when the email changes
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = async () => {
       if (!email) return;
 
       try {
@@ -48,8 +46,18 @@ const Product = ({ onShowPopup }) => {
       }
     };
 
+useEffect(() => {
+  const handleFetch = () => {
     fetchProducts();
-  }, [email]); // Dependency array only includes email, avoiding infinite loop
+  };
+
+  window.addEventListener('triggerFetchProducts', handleFetch);
+
+  return () => {
+    window.removeEventListener('triggerFetchProducts', handleFetch);
+  };
+}, []);
+
 
   // Add product
   const handleAdd = () => {
