@@ -41,7 +41,7 @@ const Login = () => {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userEmail', userEmail);
         
-        navigate('/Productpage', { state: { email: userEmail } });
+        navigate('/ProductListPage', { state: { email: userEmail } });
       } else {
         setPopupMessage(data.message || 'Login failed');
         setShowPopup(true);

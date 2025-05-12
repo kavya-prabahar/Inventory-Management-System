@@ -1,50 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useCallback } from 'react';
 import '../styles/Product.css'
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 const Product = ({ onShowPopup }) => {
+  const location = useLocation();
+const [email, setEmail] = useState(location.state?.email || localStorage.getItem('userEmail') || '');
+
   const [products, setProducts] = useState([
     { id: 1, name:'', code: '', price: 0, quantity: 0, nameUpdated: false },
   ]);
-  const location = useLocation();
   const [productlist, setProductlist] = useState([]);
   const [minQuantity, setMinQuantity] = useState(10);
-  const email = location.state?.email || localStorage.getItem('userEmail');
   const [isLoaded, setIsLoaded] = useState(false);
   // Retrieve the email from the location state
 
-  console.log(email);
+  useEffect(() => {
+    const locEmail = location.state?.email;
+    const storedEmail = localStorage.getItem('userEmail');
 
-  const fetchProducts = async () => {
-      if (!email) return;
+    if (locEmail) {
+      setEmail(locEmail);
+      localStorage.setItem('userEmail', locEmail); // Save for future access
+    } else if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, [location.state]);
 
-      try {
-        const response = await axios.get(`http://localhost:5000/user-products?email=${email}`, {
-          withCredentials: true,
-        });
-        
-        // Set productList with the fetched list
-        setProductlist(response.data.productlist || []);
-        
-        // Update products with name from productList using the code
-        const updatedProducts = response.data.products.map(product => ({
-          ...product,
-          name: response.data.productlist.find(p => p.code === product.code)?.name || '',
-          nameUpdated: false,  // Initially not updated
-        }));
+  const fetchProducts = useCallback(async () => {
+    if (!email) return;
 
-        setProducts(updatedProducts);
-        setIsLoaded(true);
-        console.log("Updated products state:", updatedProducts);
-        console.log("Fetched productlist:", response.data.productlist);
+    try {
+      const response = await axios.get(`http://localhost:5000/user-products?email=${email}`, {
+        withCredentials: true,
+      });
 
-        
-        console.log('Fetched products:', response.data.products); // Log fetched products
-      } catch (error) {
-        console.error('Error fetching products:', error.response?.data || error.message);
-      }
-    };
+      setProductlist(response.data.productlist || []);
+      const updatedProducts = response.data.products.map(product => ({
+        ...product,
+        name: response.data.productlist.find(p => p.code === product.code)?.name || '',
+        nameUpdated: false,
+      }));
+
+      setProducts(updatedProducts);
+      setIsLoaded(true);
+      console.log("Fetched products and productlist:", updatedProducts, response.data.productlist);
+
+    } catch (error) {
+      console.error('Error fetching products:', error.response?.data || error.message);
+    }
+  }, [email]);
+
+  useEffect(() => {
+  fetchProducts();
+}, [fetchProducts]);
+
 
 useEffect(() => {
   const handleFetch = () => {
@@ -55,6 +65,24 @@ useEffect(() => {
 
   return () => {
     window.removeEventListener('triggerFetchProducts', handleFetch);
+  };
+}, [fetchProducts]);
+
+
+
+useEffect(() => {
+  const handleClearProducts = () => {
+    console.log("clearProducts event received");
+    setProducts([]);
+    setProductlist([]);
+    setIsLoaded(false);
+    console.log('Products cleared due to logout/switch');
+  };
+
+  window.addEventListener('clearProducts', handleClearProducts);
+
+  return () => {
+    window.removeEventListener('clearProducts', handleClearProducts);
   };
 }, []);
 
@@ -84,15 +112,25 @@ useEffect(() => {
 
   // Update product fields dynamically
   const handleUpdate = (id, field, value) => {
-    setProducts(products.map(product =>
-      product.id === id ? { 
-        ...product, 
-        [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value 
-      } : product
-    ));
+  setProducts(products.map(product => {
+    if (product.id === id) {
+      let updatedProduct = {
+        ...product,
+        [field]: field === 'price' || field === 'quantity' ? parseFloat(value) || 0 : value
+      };
 
-    console.log(`Updated product ${id}:`, products.find(product => product.id === id)); // Log updated product
-  };
+      // If code is updated, attempt to auto-fill name
+      if (field === 'code') {
+        const matched = productlist.find(p => p.code === value);
+        updatedProduct.name = matched ? matched.name : '';
+      }
+
+      return updatedProduct;
+    }
+    return product;
+  }));
+};
+
 
   const handleDelete = async (productCode) => {
     if (!email) {

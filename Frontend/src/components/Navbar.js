@@ -17,13 +17,21 @@ const Navbar = () => {
   }, [location]);
 
   const handleLogout = async () => {
-    try {
-      localStorage.removeItem('authToken'); // Clear the JWT token
-      navigate('/Loginpage');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
+  try {
+    // Clear local storage
+    localStorage.clear();
+
+    // Dispatch event to clear products from UI/state
+    window.dispatchEvent(new Event('clearProducts'));
+    console.log("clearProducts event dispatched");
+
+    // Navigate to login page
+    navigate('/Loginpage');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+};
+
   
   // Check if the current page is Login or Register page
   const isAuthPage = location.pathname === '/Loginpage' || location.pathname === '/Registerpage';
