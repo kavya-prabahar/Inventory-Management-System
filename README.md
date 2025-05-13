@@ -4,32 +4,11 @@ A full-stack web application to manage products, sales, and stock efficiently, b
 
 ## 🔍 Features
 
-- **Authentication** using JWT (Login & Register)
-- **Product Management**
-  - Add new products with code, name, price, and initial stock
-  - View inventory and stock levels
-- **Sales Management**
-  - Add and view sales by date
-  - Auto-fill product details when code is entered
-  - Updates stock in real time
-- **Sales Reports**
-  - View past sales by date
-  - See total sales amount and individual transactions
-- **Routing with Protection**
-  - Protected routes for product, sales, and inventory pages
-  - Token expiration handling with user redirection
-
-## 🛠️ Tech Stack
-
-**Frontend:**  
-- React.js  
-- React Router DOM 
-
-**Backend:**  
-- Node.js  
-- Express.js  
-- MongoDB with Mongoose  
-- JSON Web Token (JWT) for authentication  
+- Authentication using JWT (Login & Register)
+- Manage product inventory by adding and viewing items.
+- Record and review sales by date, with real-time stock updates.
+- Auto-fetch product details (code, name, price) when adding sales or inventory.
+- View daily sales summary including total value.
 
 ## 🚀 How to Run Locally
 
@@ -61,7 +40,4 @@ JWT_SECRET=your_secret_key
 - Role-based access (Admin vs Staff)
 - Email alerts for low stock
 - Export sales/inventory reports (PDF/Excel)
-
-## 📃 License
-This project is open source and available under the MIT License.
 
