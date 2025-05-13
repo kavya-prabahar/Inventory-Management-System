@@ -18,9 +18,11 @@ const routes = [
 const navbarImport = () => import('./components/Navbar'); // Assuming you have a Navbar component
 const footerImport = () => import('./components/Footer');
 
+
 // Global Navbar Component that stays consistent across all pages
 const GlobalNavbar = () => {
   const [Navbar, setNavbar] = useState(null);
+  
 
   useEffect(() => {
     navbarImport().then(module => {
@@ -68,6 +70,8 @@ const ZeroBlinkRouter = () => {
   const [loadedComponents, setLoadedComponents] = useState({});
   const componentRefs = useRef({});
   const redirectedRef = useRef(false);
+  const alertShownRef = useRef(false);
+  const hasShownAlertRef = useRef(false);
   const protectedPaths = ['/Productpage', '/ProductListPage', '/Salespage'];
 
   // Preload all routes immediately
@@ -129,6 +133,7 @@ const ZeroBlinkRouter = () => {
     } else {
       redirectedRef.current = false; // Reset only when leaving protected page
     }
+    alertShownRef.current = false;
   }, [location.pathname, navigate]);
 
   return (
@@ -147,6 +152,7 @@ const ZeroBlinkRouter = () => {
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch'
       }}>
+        
         {routes.map(({ path }) => {
           const isActive = path === location.pathname;
           const isLoaded = loadedComponents[path];
@@ -165,10 +171,20 @@ const ZeroBlinkRouter = () => {
           const isLoggedIn = !!token;
 
           if (isProtectedRoute && !isLoggedIn && isActive) {
-            alert("Please log in to access this page.");
-            navigate('/Loginpage');
+            if (!alertShownRef.current) {
+              alertShownRef.current = true;
+              navigate('/Loginpage');
+            }
             return null;
           }
+          
+            if (!isLoaded) {
+              return isActive ? (
+                <div key={path} style={{ width: '100%' }}>
+                  <div style={{ width: '100%', minHeight: '100%', background: 'white' }} />
+                </div>
+              ) : null;
+            }
 
           return (
             <div
