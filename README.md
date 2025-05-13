@@ -62,3 +62,6 @@ JWT_SECRET=your_secret_key
 - Email alerts for low stock
 - Export sales/inventory reports (PDF/Excel)
 
+## 📃 License
+This project is open source and available under the MIT License.
+
